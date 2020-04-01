@@ -20,9 +20,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private static final String TAG = "SignupActivity";
-
-
     // Firebase
     private FirebaseAuth mAuth;
 
@@ -78,7 +75,7 @@ public class SignupActivity extends AppCompatActivity {
         String email=mEmail.getText().toString().trim();
         String pass=mPass.getText().toString().trim();
 
-        //Check if valid email is provided
+        //Check if empty email is provided
         if(TextUtils.isEmpty(email)){
             mEmail.setError("Valid Email Required!");
             return;

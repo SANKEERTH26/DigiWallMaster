@@ -2,123 +2,66 @@ package com.example.digiwall;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-
-public class MainActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-
-
-    //Fragments
-    private TransFragment transFragment;
-    private ProfileFragment profileFragment;
-    private HomeFragment homeFragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_profile);
 
-
-
+        //Initialize Firebase authentication
+        mAuth= FirebaseAuth.getInstance();
 
         //Initialize Toolbar into the screen
         androidx.appcompat.widget.Toolbar toolbar= (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Initialize Firebase authentication
-        mAuth=FirebaseAuth.getInstance();
-
-
-        //Initialize fragments
-        transFragment = new TransFragment();
-        profileFragment= new ProfileFragment();
-        homeFragment= new HomeFragment();
-
         //Intialize and assign variable
         BottomNavigationView bootomNav=findViewById(R.id.bottom_navigation);
 
         //Set Home Selected
-        setFragment(homeFragment);
+        bootomNav.setSelectedItemId(R.id.profile );
 
         //Perform Item Selector listener
         bootomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                MainActivity.this.bottomNaviSwitch(item);
-                return true;
+
+                switch (item.getItemId()){
+
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        finish();
+                        overridePendingTransition(0,0);
+                        return true;
+
+                    case R.id.transactions:
+                        startActivity(new Intent(getApplicationContext(),TransActivity.class));
+                        finish();
+                        overridePendingTransition(0,0);
+                        return true;
+
+                    case R.id.profile:
+                        return true;
+                }
+                return false;
             }
         });
 
     }
-
-
-    private void left_date_navi(){
-
-
-    }
-    private void right_date_navi(){
-
-
-    }
-
-
-
-    //Common methods to be called in all screens
-
-    public boolean bottomNaviSwitch(@NonNull MenuItem item){
-
-        switch (item.getItemId()){
-
-            case R.id.home:
-                setFragment(homeFragment);
-                return true;
-
-
-            case R.id.transactions:
-                setFragment(transFragment);
-                return true;
-
-            case R.id.profile:
-                setFragment(profileFragment);
-                return true;
-        }
-        return false;
-
-    }
-
-    private void setFragment(Fragment fragment) {
-
-        FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_frame,fragment);
-        fragmentTransaction.commit();
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,5 +97,4 @@ public class MainActivity extends AppCompatActivity {
     public void showToast(String toastText) {
         Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
     }
-
 }
