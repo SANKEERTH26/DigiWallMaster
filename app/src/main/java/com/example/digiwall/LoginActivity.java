@@ -15,12 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -33,7 +30,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "AndroidClarified";
     private SignInButton googleSignInButton;
-    private GoogleSignInClient googleSignInClient;
 
     //intitializing the variables in registration page
     private EditText mEmail;
@@ -76,7 +72,6 @@ public class LoginActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
-        googleSignInClient = GoogleSignIn.getClient(this, gso);
 
         mDialog = new ProgressDialog(this);
 
@@ -89,14 +84,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        //Google btn
-        googleSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent signInIntent = googleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, 101);
-            }
-        });
 
         //Don't have an account? Register
         mSignupHere.setOnClickListener(new View.OnClickListener() {

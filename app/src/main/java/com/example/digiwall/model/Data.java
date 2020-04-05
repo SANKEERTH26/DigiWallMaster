@@ -10,6 +10,9 @@ public class Data {
     private String id;
     private String date;
 
+    public Data(){
+
+    }
     public Data(int amount, String type, String note, String id, String date) {
         this.amount = amount;
         this.type = type;
@@ -58,7 +61,5 @@ public class Data {
         this.date = date;
     }
 
-    public Data(){
 
-    }
 }

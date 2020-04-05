@@ -5,6 +5,14 @@
         android:title="Home"
         android:id="@+id/home"
         android:icon="@drawable/ic_home_black_24dp" />
+    <item
+        android:title="Income"
+        android:id="@+id/income"
+        android:icon="@drawable/add" />
+    <item
+        android:title="Expense"
+        android:id="@+id/expense"
+        android:icon="@drawable/minus" />
 
     <item
         android:title="Transactions"

@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.TestLooperManager;
 import android.text.TextUtils;
@@ -45,6 +46,9 @@ public class HomeFragment extends Fragment {
     public static final String[] MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
+    private IncomeFragment incomeFragment;
+    private ExpenseFragment expenseFragment;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -66,6 +70,7 @@ public class HomeFragment extends Fragment {
 
     //Animation
     private Animation FadeOpen,FadeClose;
+
 
     //Firebase
     private FirebaseAuth mAuth;
@@ -95,20 +100,27 @@ public class HomeFragment extends Fragment {
         fabTxt_expense=myview.findViewById(R.id.txt_expense);
 
         //Animation connect
-
         FadeClose= AnimationUtils.loadAnimation(getActivity(),R.anim.fade_close);
         FadeOpen=AnimationUtils.loadAnimation(getActivity(),R.anim.fade_open);
+
+        incomeFragment=new IncomeFragment();
+        expenseFragment=new ExpenseFragment();
+
+        //Intialize Income and expense button
+        Button incomeButton=myview.findViewById(R.id.btn_income);
+        Button expenseButton=myview.findViewById(R.id.btn_expense);
+
 
 
         //Perform filter date
         datePicker();
-
         //Check status of floating button
         float_button();
 
 
         return myview;
     }
+
 
     private void addData(){
 

@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private TransFragment transFragment;
     private ProfileFragment profileFragment;
     private HomeFragment homeFragment;
+    private IncomeFragment incomeFragment;
+    private ExpenseFragment expenseFragment;
+
 
 
     @Override
@@ -59,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
         transFragment = new TransFragment();
         profileFragment= new ProfileFragment();
         homeFragment= new HomeFragment();
+        incomeFragment=new IncomeFragment();
+        expenseFragment=new ExpenseFragment();
+
+
 
         //Intialize and assign variable
         BottomNavigationView bootomNav=findViewById(R.id.bottom_navigation);
@@ -99,6 +106,13 @@ public class MainActivity extends AppCompatActivity {
                 setFragment(homeFragment);
                 return true;
 
+            case R.id.income:
+                setFragment(incomeFragment);
+                return true;
+
+            case R.id.expense:
+                setFragment(expenseFragment);
+                return true;
 
             case R.id.transactions:
                 setFragment(transFragment);
