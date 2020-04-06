@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -29,8 +30,11 @@ import com.example.digiwall.model.Data;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -49,7 +53,10 @@ public class HomeFragment extends Fragment {
     private IncomeFragment incomeFragment;
     private ExpenseFragment expenseFragment;
 
+
+
     public HomeFragment() {
+
         // Required empty public constructor
     }
 
@@ -71,7 +78,6 @@ public class HomeFragment extends Fragment {
     //Animation
     private Animation FadeOpen,FadeClose;
 
-
     //Firebase
     private FirebaseAuth mAuth;
     private DatabaseReference mIncomeDatabase;
@@ -86,8 +92,60 @@ public class HomeFragment extends Fragment {
         FirebaseUser mUser=mAuth.getCurrentUser();
         String uid=mUser.getUid();
 
+        //Intialize Income and expense button
+        final Button incomeButton=myview.findViewById(R.id.btn_income);
+        final Button expenseButton=myview.findViewById(R.id.btn_expense);
+
         mIncomeDatabase= FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
         mExpenseDatabase= FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
+
+        mIncomeDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int totalvalue=0;
+
+                for(DataSnapshot mysnapshot: dataSnapshot.getChildren() ){
+
+                    Data data =mysnapshot.getValue(Data.class);
+
+                    totalvalue+=data.getAmount();
+
+                    String stTotalvalue= String.valueOf(totalvalue);
+                    incomeButton.setText("Income\n"+stTotalvalue+" CAD");
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        mExpenseDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                int totalvalue=0;
+
+                for(DataSnapshot mysnapshot: dataSnapshot.getChildren() ){
+
+                    Data data =mysnapshot.getValue(Data.class);
+
+                    totalvalue+=data.getAmount();
+
+                    String stTotalvalue= String.valueOf(totalvalue);
+                    expenseButton.setText("Expense\n"+stTotalvalue+" CAD");
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
         //Connect floating button to layout
@@ -106,9 +164,7 @@ public class HomeFragment extends Fragment {
         incomeFragment=new IncomeFragment();
         expenseFragment=new ExpenseFragment();
 
-        //Intialize Income and expense button
-        Button incomeButton=myview.findViewById(R.id.btn_income);
-        Button expenseButton=myview.findViewById(R.id.btn_expense);
+
 
 
 

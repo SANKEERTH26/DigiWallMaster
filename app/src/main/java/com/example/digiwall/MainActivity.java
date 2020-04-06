@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     //Fragments
-    private TransFragment transFragment;
     private ProfileFragment profileFragment;
     private HomeFragment homeFragment;
     private IncomeFragment incomeFragment;
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Initialize fragments
-        transFragment = new TransFragment();
         profileFragment= new ProfileFragment();
         homeFragment= new HomeFragment();
         incomeFragment=new IncomeFragment();
@@ -112,10 +110,6 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.expense:
                 setFragment(expenseFragment);
-                return true;
-
-            case R.id.transactions:
-                setFragment(transFragment);
                 return true;
 
             case R.id.profile:

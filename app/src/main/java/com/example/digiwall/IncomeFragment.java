@@ -25,8 +25,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,12 +43,11 @@ public class IncomeFragment extends Fragment {
     //Recycler view
     private RecyclerView recyclerView;
 
+    //Search View
     private SearchView searchView;
-    
+
     //TextView Total amount
     private TextView income_total;
-
-    private ArrayList<Data> list;
 
 
     @Override
@@ -66,8 +63,41 @@ public class IncomeFragment extends Fragment {
         String uid = mUser.getUid();
 
         mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
-        recyclerView= myview.findViewById(R.id.recycle_income);
-        searchView = myview.findViewById(R.id.searchView);
+
+        recyclerView = myview.findViewById(R.id.recycle_income);
+        searchView=myview.findViewById(R.id.searchViewIncome);
+
+        income_total=myview.findViewById(R.id.income_txt_result);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+
+        mIncomeDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                int totalvalue=0;
+
+                for(DataSnapshot mysnapshot: dataSnapshot.getChildren() ){
+
+                    Data data =mysnapshot.getValue(Data.class);
+
+                    totalvalue+=data.getAmount();
+
+                    String stTotalvalue= String.valueOf(totalvalue);
+                    income_total.setText(stTotalvalue+" CAD");
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         return myview;
     }
@@ -76,75 +106,95 @@ public class IncomeFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if(mIncomeDatabase != null){
+        FirebaseRecyclerOptions<Data> options = new FirebaseRecyclerOptions.Builder<Data>()
+                .setQuery(mIncomeDatabase,Data.class)
+                .build();
 
-            mIncomeDatabase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-                {
-                    list = new ArrayList<Data>();
-                    if(dataSnapshot.exists()){
-                        for(DataSnapshot ds : dataSnapshot.getChildren())
-                        {
-                            list.add(ds.getValue(Data.class));
-                        }
-                        AdapterClass adapterClass = new AdapterClass(list);
-                        recyclerView.setAdapter(adapterClass);
+        final FirebaseRecyclerAdapter<Data,MyViewHolder> adapter = new FirebaseRecyclerAdapter<Data, MyViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull final MyViewHolder holder, int position, @NonNull Data model) {
+
+                mIncomeDatabase.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        Data data =dataSnapshot.getValue(Data.class);
+
+                        String userType= data.getType();
+                        String userNote= data.getNote();
+                        String userDate= data.getDate();
+                        int userAmount= data.getAmount();
+
+                        holder.setType(userType);
+                        holder.setNote(userNote);
+                        holder.setDate(userDate);
+                        holder.setAmount(userAmount);
+
                     }
 
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+            }
 
-                }
-            });
+            @NonNull
+            @Override
+            public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
+                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.income_recycle_data,parent,false);
+                MyViewHolder viewHolder=new MyViewHolder(view);
+                return viewHolder;
 
-        }
+            }
+        };
+        recyclerView.setAdapter(adapter);
+        adapter.startListening();
     }
 
-//    public static class MyViewHolder extends RecyclerView.ViewHolder{
-//
-//        View mView;
-//
-//        public MyViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//            this.mView = itemView;
-//        }
-//
-//
-//        private void setType(String type){
-//
-//            TextView mType=mView.findViewById(R.id.type_txt_income);
-//            mType.setText(type);
-//
-//        }
-//
-//        private void setNote(String note){
-//
-//            TextView mNote=mView.findViewById(R.id.note_txt_income);
-//            mNote.setText(note);
-//
-//        }
-//
-//        private void setDate(String date){
-//
-//            TextView mDate=mView.findViewById(R.id.date_txt_income);
-//            mDate.setText(date);
-//
-//        }
-//
-//        private void setAmount(int amount){
-//
-//            TextView mAmount=mView.findViewById(R.id.amount_txt_income);
-//            String stamount=String.valueOf(amount);
-//            mAmount.setText(stamount);
-//
-//        }
-//
-//
-//    }
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
+
+        View mView;
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.mView = itemView;
+        }
+
+
+        private void setType(String type){
+
+            TextView mType=mView.findViewById(R.id.type_txt_income);
+            mType.setText(type);
+
+        }
+
+        private void setNote(String note){
+
+            TextView mNote=mView.findViewById(R.id.note_txt_income);
+            mNote.setText(note);
+
+        }
+
+        private void setDate(String date){
+
+            TextView mDate=mView.findViewById(R.id.date_txt_income);
+            mDate.setText(date);
+
+        }
+
+        private void setAmount(int amount){
+
+            TextView mAmount=mView.findViewById(R.id.amount_txt_income);
+            String stamount=String.valueOf(amount);
+            mAmount.setText(stamount);
+
+        }
+
+
+    }
+
 
 }
 

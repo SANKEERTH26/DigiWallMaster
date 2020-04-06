@@ -8,6 +8,13 @@
     android:layout_height="match_parent"
     tools:context=".IncomeFragment">
 
+    <SearchView
+        android:id="@+id/searchViewExpense"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_margin="5dp"
+        android:queryHint="Search Income"/>
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
